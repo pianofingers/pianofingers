@@ -39,15 +39,20 @@
 
   /* ---------- Top bar ---------- */
   .topbar{
-    display:grid;
-    grid-template-columns:auto 1fr auto;
-    grid-template-areas:"brand gf support";
+    display:flex;
+    justify-content:space-between;
     align-items:center;
+    position:relative;
     gap:16px;
   }
-  .brand{ grid-area:brand; }
-  .global-functions{ grid-area:gf; }
-  .support-btn{ grid-area:support; justify-self:end; }
+  .brand{ }
+  .global-functions{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%, -50%);
+  }
+  .support-btn{ flex-shrink:0; }
 
   /* ---------- Global Functions ---------- */
   .global-functions{
@@ -88,17 +93,6 @@
   .mode-btn.active{
     background:var(--coral);
     color:#050505;
-  }
-
-  @media (max-width:899px){
-    .topbar{
-      grid-template-columns:1fr auto;
-      grid-template-areas:
-        "brand support"
-        "gf gf";
-      row-gap:10px;
-    }
-    .support-btn{ justify-self:end; }
   }
 
   .brand{
@@ -557,12 +551,7 @@
   /* ---- Narrow landscape (phones, <900px wide, landscape orientation):
      still usable, just scrollable rather than locked to 100vh ---- */
   @media (max-width:899px) and (orientation:landscape){
-    .page{ padding-left:28px; padding-right:28px; }
-    .topbar{
-      grid-template-columns:auto 1fr auto;
-      grid-template-areas:"brand gf support";
-      row-gap:0;
-    }
+    .page{ padding-left:40px; padding-right:32px; }
     .global-functions{ gap:4px; }
     .controls-row{ grid-template-columns:repeat(3, 1fr); }
     .tempo-control{ display:none; }
