@@ -554,7 +554,8 @@
     .page{ padding-left:40px; padding-right:32px; }
     .global-functions{ gap:4px; }
     .controls-row{ grid-template-columns:repeat(3, 1fr); }
-    .tempo-control{ display:none; }
+    body.mode-chords .controls-row{ grid-template-columns:repeat(4, 1fr); }
+    body.mode-scales .tempo-control{ display:none; }
     .transport-panel{ display:none; }
     .bottom-row{ display:none; }
     .page{ height:auto; min-height:100vh; }
@@ -1541,6 +1542,8 @@ document.getElementById('loopBtn').addEventListener('click', () => {
 /* ---------------- Render ---------------- */
 
 function render(){
+  document.body.classList.toggle('mode-chords', state.mode === 'chords');
+  document.body.classList.toggle('mode-scales', state.mode !== 'chords');
   document.getElementById('keyValue').textContent = CHROMATIC[state.tone];
   document.getElementById('handsValue').textContent = HAND_LABEL[state.hand];
 
