@@ -558,6 +558,12 @@
      still usable, just scrollable rather than locked to 100vh ---- */
   @media (max-width:899px) and (orientation:landscape){
     .page{ padding-left:28px; padding-right:28px; }
+    .topbar{
+      grid-template-columns:auto 1fr auto;
+      grid-template-areas:"brand gf support";
+      row-gap:0;
+    }
+    .global-functions{ gap:4px; }
     .controls-row{ grid-template-columns:repeat(3, 1fr); }
     .tempo-control{ display:none; }
     .transport-panel{ display:none; }
