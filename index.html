@@ -146,6 +146,8 @@
     gap:clamp(10px,1.6vw,22px);
     width:100%;
   }
+  body.mode-chords .hands-control{ order:1; }
+  body.mode-chords .tempo-control{ order:0; }
   .control{
     display:flex;
     flex-direction:column;
@@ -198,9 +200,25 @@
   .accent{ color:var(--coral); }
 
   /* ---------- Keyboard ---------- */
-  .keyboard-section{
-    flex:6 1 0;
+  .middle-zone{
+    flex:1 1 0;
     min-height:0;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    width:100%;
+    gap:clamp(10px,1.6vw,20px);
+  }
+  .middle-zone{
+    flex:1 1 0;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    width:100%;
+    gap:clamp(10px,1.6vh,20px);
+  }
+  .keyboard-section{
     display:flex;
     flex-direction:column;
     align-items:center;
@@ -210,8 +228,6 @@
   }
   .kb-wrap{
     width:100%;
-    flex:1 1 auto;
-    min-height:0;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -257,7 +273,7 @@
     transition:background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
   }
   /* Loop matches Play icon size */
-  #loopBtn .transport-icon svg{ width:65%; height:65%; }
+  #loopBtn .transport-icon svg{ width:55%; height:55%; }
   .transport-btn.active .transport-icon{
     background:var(--coral);
     border-color:var(--coral);
@@ -487,9 +503,9 @@
   .quick-btn{
     border:2px solid var(--white);
     border-radius:999px;
-    padding:clamp(5px,1vh,8px) 6px;
+    padding:clamp(8px,1.6vh,12px) 6px;
     font-family:'Inter', sans-serif;
-    font-size:clamp(9px,1.25vh,11px);
+    font-size:clamp(11px,1.55vh,14px);
     font-weight:500;
     background:transparent;
     color:var(--white);
@@ -497,7 +513,7 @@
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
-    width:85%;
+    width:92%;
   }
   .quick-btn:hover{ border-color:var(--coral); }
   .quick-btn.active{ background:var(--coral); color:#050505; border-color:transparent; }
@@ -632,7 +648,7 @@
           <button class="step-arrow" id="scaleRight" aria-label="Next scale">&#8250;</button>
         </div>
       </div>
-      <div class="control">
+      <div class="control hands-control">
         <div class="control-label">CHOOSE <span class="accent">HANDS</span></div>
         <div class="stepper">
           <button class="step-arrow" id="handsLeft" aria-label="Previous hand">&#8249;</button>
@@ -651,6 +667,7 @@
     </div>
     </div>
 
+    <div class="middle-zone">
     <div class="keyboard-section">
       <div class="kb-wrap" id="kbWrap">
         <svg id="keyboard" viewBox="0 0 980 260" xmlns="http://www.w3.org/2000/svg"></svg>
@@ -705,6 +722,7 @@
         </div>
         <div class="quick-grid" id="quickGrid"></div>
       </div>
+    </div>
     </div>
 
     <div class="transport-panel">
@@ -1058,11 +1076,24 @@ function buildKeyboard(svgId){
   if(state.mode === 'chords'){
     const chord = getChordData();
     if(state.hand === 'both'){
-      chord.offsets.forEach((o, idx) => { activeMap[state.tone + o] = { finger: chord.fingersLH[idx], circled: false }; });
-      chord.offsets.forEach((o, idx) => { activeMap[state.tone + o + 24] = { finger: chord.fingersRH[idx], circled: false }; });
+      // Some inversions push notes high enough (root + offset + 24 for RH)
+      // that they'd fall off the right edge of the 4-octave keyboard.
+      // Shift the whole chord down by whole octaves until every note
+      // (both hands) fits within the visible range.
+      const allAbs = [];
+      chord.offsets.forEach(o => { allAbs.push(state.tone + o); allAbs.push(state.tone + o + 24); });
+      let shift = 0;
+      while(Math.max(...allAbs) - shift > 47) shift += 12;
+      while(Math.min(...allAbs) - shift < 0) shift -= 12;
+      chord.offsets.forEach((o, idx) => { activeMap[state.tone + o - shift] = { finger: chord.fingersLH[idx], circled: false }; });
+      chord.offsets.forEach((o, idx) => { activeMap[state.tone + o + 24 - shift] = { finger: chord.fingersRH[idx], circled: false }; });
     } else {
       const fingers = state.hand === 'L' ? chord.fingersLH : chord.fingersRH;
-      chord.offsets.forEach((o, idx) => { activeMap[state.tone + o] = { finger: fingers[idx], circled: false }; });
+      const allAbs = chord.offsets.map(o => state.tone + o);
+      let shift = 0;
+      while(Math.max(...allAbs) - shift > 47) shift += 12;
+      while(Math.min(...allAbs) - shift < 0) shift -= 12;
+      chord.offsets.forEach((o, idx) => { activeMap[state.tone + o - shift] = { finger: fingers[idx], circled: false }; });
     }
   } else {
     const raw = getRawScaleData();
@@ -1090,7 +1121,8 @@ function buildKeyboard(svgId){
   }
 
   const totalW = OCTAVES*7*WW;
-  svg.setAttribute('viewBox', `0 0 ${totalW} ${WH+42}`);
+  const vPad = 42 / 2;
+  svg.setAttribute('viewBox', `0 ${-vPad} ${totalW} ${WH + 42}`);
 
   const defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
   const clip = document.createElementNS('http://www.w3.org/2000/svg','clipPath');
