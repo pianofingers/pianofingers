@@ -145,6 +145,161 @@
   .support-btn .heart{ margin-left:6px; }
   .support-btn:hover{ background:var(--coral); color:#050505; }
 
+  .topbar-right{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-shrink:0;
+  }
+  .info-btn{
+    width:26px;
+    height:26px;
+    border-radius:50%;
+    border:none;
+    background:var(--coral);
+    color:#050505;
+    font-family:Garamond, 'EB Garamond', 'Times New Roman', serif;
+    font-style:italic;
+    font-weight:700;
+    font-size:17px;
+    line-height:1;
+    padding:0 0 1px 0;
+    cursor:pointer;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:transform 0.15s ease, filter 0.15s ease;
+  }
+  .info-btn:hover{ transform:scale(1.08); filter:brightness(1.1); }
+
+  /* ---------- Info modal ---------- */
+  .modal-backdrop{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:500;
+    background:rgba(5,5,5,0.55);
+    backdrop-filter:blur(3px);
+    -webkit-backdrop-filter:blur(3px);
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+  .modal-backdrop.open{ display:flex; }
+  .modal-panel{
+    position:relative;
+    width:min(1020px, 100%);
+    max-height:88vh;
+    overflow-y:auto;
+    background:rgba(5,5,5,0.94);
+    border:1.5px solid var(--line-strong);
+    border-radius:20px;
+    padding:clamp(24px,3.2vh,40px) clamp(24px,3vw,46px);
+    color:var(--white);
+    box-shadow:0 24px 70px rgba(0,0,0,0.6);
+  }
+  .modal-close{
+    position:absolute;
+    top:14px;
+    right:18px;
+    background:none;
+    border:none;
+    color:var(--dim);
+    font-size:26px;
+    line-height:1;
+    cursor:pointer;
+    padding:4px 8px;
+    border-radius:50%;
+  }
+  .modal-close:hover{ color:var(--coral); }
+
+  .modal-head{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    gap:12px;
+    padding-bottom:clamp(16px,2.2vh,26px);
+    border-bottom:1px solid var(--line);
+  }
+  .modal-logo{ height:clamp(38px,5.2vh,54px); width:auto; display:block; }
+  .modal-tagline{
+    margin:0;
+    font-size:clamp(13px,1.7vh,16px);
+    font-weight:500;
+    letter-spacing:0.02em;
+    color:var(--white);
+    max-width:640px;
+  }
+
+  .modal-cols{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:clamp(20px,2.4vw,38px);
+    padding:clamp(18px,2.6vh,30px) 0;
+  }
+  .modal-col h2{
+    margin:0 0 10px;
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--coral);
+    font-weight:700;
+  }
+  .modal-col p{
+    margin:0 0 10px;
+    font-size:13px;
+    line-height:1.62;
+    color:rgba(244,244,241,0.78);
+  }
+  .modal-col p:last-child{ margin-bottom:0; }
+  .modal-col strong{ color:var(--white); font-weight:600; }
+
+  .modal-foot{
+    border-top:1px solid var(--line);
+    padding-top:clamp(16px,2.2vh,24px);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    gap:14px;
+  }
+  .modal-support{
+    margin:0;
+    font-size:12.5px;
+    line-height:1.6;
+    color:rgba(244,244,241,0.7);
+    max-width:620px;
+  }
+  .modal-actions{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:10px;
+  }
+  .modal-btn{
+    padding:9px 20px;
+    border-radius:999px;
+    border:1.5px solid var(--line-strong);
+    color:var(--white);
+    background:transparent;
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:0.02em;
+    text-decoration:none;
+    white-space:nowrap;
+    transition:border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+  }
+  .modal-btn:hover{ border-color:var(--coral); color:var(--coral); }
+  .modal-btn.primary{ border-color:var(--coral); color:var(--coral); }
+  .modal-btn.primary:hover{ background:var(--coral); color:#050505; }
+
+  @media (max-width:899px){
+    .modal-cols{ grid-template-columns:1fr; gap:18px; }
+    .modal-panel{ max-height:92vh; }
+  }
+
   .topbar-divider{
     height:1px;
     background:var(--line-strong);
@@ -197,6 +352,7 @@
     align-items:center;
     gap:5px;
   }
+  body.mode-chords .gradual-row{ display:none; }
   .gradual-label{
     font-size:9px;
     letter-spacing:0.1em;
@@ -716,7 +872,49 @@
         </div>
       </div>
 
-      <a class="support-btn" id="donateLink" href="https://donate.stripe.com/00w8wQbZr6Wk3jxaS24sE0d" target="_blank" rel="noopener">Support Piano Fingers<span class="heart">&#9829;</span></a>
+      <div class="topbar-right">
+        <a class="support-btn" id="donateLink" href="https://donate.stripe.com/00w8wQbZr6Wk3jxaS24sE0d" target="_blank" rel="noopener">Support Piano Fingers<span class="heart">&#9829;</span></a>
+        <button class="info-btn" id="infoBtn" aria-label="About Piano Fingers">i</button>
+      </div>
+    </div>
+
+    <div class="modal-backdrop" id="infoModal" role="dialog" aria-modal="true" aria-label="About Piano Fingers">
+      <div class="modal-panel">
+        <button class="modal-close" id="infoClose" aria-label="Close">&times;</button>
+
+        <div class="modal-head">
+          <img class="modal-logo" id="modalLogo" alt="Piano Fingers">
+          <h1 class="modal-tagline">The free interactive <span class="accent">piano scale &amp; chord fingering</span> tool</h1>
+        </div>
+
+        <div class="modal-cols">
+          <div class="modal-col">
+            <h2>What it is</h2>
+            <p>Piano Fingers is a free, interactive guide to <strong>piano scale fingering</strong> and <strong>piano chord fingering</strong>. Pick any key, browse major and minor scales, pentatonic and blues scales, and a wide range of chord types &mdash; then see exactly which finger to use on each hand, right on a playable keyboard.</p>
+            <p>Circled numbers show you where the thumb tucks under or crosses over, so you learn the movement, not just the notes.</p>
+          </div>
+
+          <div class="modal-col">
+            <h2>Who it&rsquo;s for</h2>
+            <p>Whether you&rsquo;re a beginner working out your first <strong>C major scale</strong>, or a more experienced player brushing up on <strong>chord inversions</strong> and <strong>seventh chords</strong>, it&rsquo;s built to be a fast visual reference you can come back to anytime.</p>
+            <p>Great for practice at the keyboard, teaching, or checking a fingering before you commit it to muscle memory.</p>
+          </div>
+
+          <div class="modal-col">
+            <h2>How to use it</h2>
+            <p>Choose a key and a scale &mdash; or switch to <span class="accent">Chords</span> for triads, sevenths, sus and diminished shapes with every inversion.</p>
+            <p>Select left hand, right hand or both, set your tempo, and press play to hear it back. Turn on <span class="accent">Increase</span> to step the tempo up automatically each time it loops &mdash; a simple speed trainer.</p>
+          </div>
+        </div>
+
+        <div class="modal-foot">
+          <p class="modal-support">Piano Fingers is free to use and built independently. If it helps you, a small donation keeps it running and improving.</p>
+          <div class="modal-actions">
+            <a class="modal-btn primary" href="https://donate.stripe.com/00w8wQbZr6Wk3jxaS24sE0d" target="_blank" rel="noopener">Support Piano Fingers &#9829;</a>
+            <a class="modal-btn" href="mailto:pianofingersapp@gmail.com">pianofingersapp@gmail.com</a>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="topbar-divider"></div>
@@ -1702,7 +1900,7 @@ function stopScale(){
   setPlayUI(false);
 }
 function bumpGradualTempo(){
-  if(!state.gradualIncrease) return;
+  if(!state.gradualIncrease || state.mode === 'chords') return;
   const next = Math.min(TEMPO_MAX, state.tempo + 5);
   if(next === state.tempo) return;
   state.tempo = next;
@@ -1885,6 +2083,30 @@ document.getElementById('modeChords').addEventListener('click', () => {
   document.getElementById('modeChords').classList.add('active');
   document.getElementById('modeScales').classList.remove('active');
   render();
+});
+
+/* ---------------- Info modal ---------------- */
+
+// Reuse the existing logo bitmap rather than embedding it a second time.
+document.getElementById('modalLogo').src = document.querySelector('.logo-image').src;
+
+const infoModal = document.getElementById('infoModal');
+
+function openInfo(){
+  infoModal.classList.add('open');
+  document.getElementById('infoClose').focus();
+}
+function closeInfo(){
+  infoModal.classList.remove('open');
+}
+
+document.getElementById('infoBtn').addEventListener('click', openInfo);
+document.getElementById('infoClose').addEventListener('click', closeInfo);
+infoModal.addEventListener('click', (e) => {
+  if(e.target === infoModal) closeInfo();
+});
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'Escape' && infoModal.classList.contains('open')) closeInfo();
 });
 </script>
 </body>
